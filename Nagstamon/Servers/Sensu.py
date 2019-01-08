@@ -55,6 +55,7 @@ class SensuServer(GenericServer):
         self.uchiwa_datacenter = conf.servers[self.get_name()].monitor_site
         self.username = conf.servers[self.get_name()].username
         self.password = conf.servers[self.get_name()].password
+        self.ca_cert = conf.servers[self.get_name()].custom_cert_ca_file
 
         self.BROWSER_URLS = {
             'monitor': '$MONITOR$',
@@ -85,7 +86,8 @@ class SensuServer(GenericServer):
             self.sensu_api = SensuAPI(
                 self.api_url,
                 username=self.username,
-                password=self.password
+                password=self.password,
+                ca_cert = self.ca_cert
             )
         except SensuAPIException:
                 self.Error(sys.exc_info())
