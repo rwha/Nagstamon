@@ -36,7 +36,7 @@ class SensuAPIException(Exception):
 
 
 class SensuAPI(object):
-    def __init__(self, url_base, username=None, password=None):
+    def __init__(self, url_base, username=None, password=None, ca_cert=None):
         self._url_base = url_base
         self._header = {
             'User-Agent': 'PySensu Client v0.9.0'
@@ -50,6 +50,7 @@ class SensuAPI(object):
             self.auth = None
         else:
             self.auth = None
+        self.ca_cert = ca_cert
 
     def _request(self, method, path, **kwargs):
         url = '{}{}'.format(self._url_base, path)
@@ -57,19 +58,19 @@ class SensuAPI(object):
 
         if method == 'GET':
             resp = requests.get(url, auth=self.auth, headers=self._header,
-                                **kwargs)
+                                verify=self.ca_cert, **kwargs)
 
         elif method == 'POST':
             resp = requests.post(url, auth=self.auth, headers=self._header,
-                                 **kwargs)
+                                 verify=self.ca_cert, **kwargs)
 
         elif method == 'PUT':
             resp = requests.put(url, auth=self.auth, headers=self._header,
-                                **kwargs)
+                                verify=self.ca_cert, **kwargs)
 
         elif method == 'DELETE':
             resp = requests.delete(url, auth=self.auth, headers=self._header,
-                                   **kwargs)
+                                   verify=self.ca_cert, **kwargs)
         else:
             raise SensuAPIException(
                 'Method {} not implemented'.format(method)
